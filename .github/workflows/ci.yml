@@ -1,0 +1,42 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  test:
+    name: Run unit tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+
+      - name: Install FastAPI service dependencies
+        working-directory: fastapi_service
+        run: |
+          pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run FastAPI unit tests
+        working-directory: fastapi_service
+        run: pytest
+
+      - name: Install Streamlit client dependencies
+        working-directory: streamlit_web_client
+        run: |
+          pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run Streamlit tests
+        working-directory: streamlit_web_client
+        run: pytest
